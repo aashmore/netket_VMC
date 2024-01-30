@@ -71,7 +71,7 @@ def SRt(
     if mpi.rank == 0:
         matrix = matrix + diag_shift * jnp.eye(
             matrix_side
-        )  # * shift diagonal regularization
+        ) + jnp.full(matrix.shape, 1/N_mc) # * shift diagonal regularization and add full matrix of 1/N
         aus_vector = solver_fn(matrix, dv)
         aus_vector = aus_vector.reshape(mpi.n_nodes, -1)
         aus_vector, token = mpi.mpi_scatter_jax(aus_vector, token=token)
